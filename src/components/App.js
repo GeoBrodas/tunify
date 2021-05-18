@@ -1,13 +1,17 @@
 import React from 'react'
 import Login from './Login'
-import { Heading, VStack } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
+import Dashboard from './Dashboard'
+
+const code = new URLSearchParams(window.location.search).get('code')
 
 function App() {
-  return (
-    <VStack>
-      <Heading>Hello world!</Heading>
+  return code ? (
+    <Dashboard code={code} />
+  ) : (
+    <Flex direction="column" align="center" justify="center" m={20}>
       <Login />
-    </VStack>
+    </Flex>
   )
 }
 

@@ -1,4 +1,4 @@
-import { Button, Link, Stack } from '@chakra-ui/react'
+import { Button, Link, Stack, Heading } from '@chakra-ui/react'
 import React from 'react'
 
 const AUTH_URL =
@@ -6,9 +6,10 @@ const AUTH_URL =
 
 export default function Login() {
   return (
-    <Stack>
+    <Stack align="center">
+      <Heading mb={10}>Welcome to Tunify</Heading>
       <Link href={AUTH_URL}>
-        <Button>Login to Tunify!</Button>
+        <Button variant="ghost">Login using Spotify</Button>
       </Link>
     </Stack>
   )
