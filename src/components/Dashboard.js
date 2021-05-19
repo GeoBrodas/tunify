@@ -1,30 +1,111 @@
-import React from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useEffect, useState } from 'react'
 import useAuth from './useAuth'
-import { VStack, Form, Input } from '@chakra-ui/react'
+import SpotifyWebApi from 'spotify-web-api-node'
+import { Flex, Input, Stack, Text } from '@chakra-ui/react'
+import TrackSearchResult from './TrackSearchResult'
+import Player from './Player'
+import axios from 'axios'
+
+const spotifyApi = new SpotifyWebApi({
+  clientId: '2564aa66546145c1b40d84093a336143',
+})
 
 export default function Dashboard({ code }) {
+  const [search, setSearch] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [playingTrack, setPlayingTrack] = useState()
+  const [lyrics, setLyrics] = useState('')
   const accessToken = useAuth(code)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
-  const onSubmit = (data) => console.log(data)
-  console.log(errors)
+  function chooseTrack(track) {
+    setPlayingTrack(track)
+    setSearch('')
+    setLyrics('')
+  }
+
+  useEffect(() => {
+    if (!playingTrack) return
+
+    axios
+      .get('http://localhost:3001/lyrics', {
+        params: {
+          track: playingTrack.title,
+          artist: playingTrack.artist,
+        },
+      })
+      .then((res) => {
+        setLyrics(res.data.lyrics)
+        console.log(res)
+      })
+  }, [playingTrack])
+
+  useEffect(() => {
+    if (!accessToken) return
+    spotifyApi.setAccessToken(accessToken)
+  }, [accessToken])
+
+  useEffect(() => {
+    if (!search) return setSearchResults([])
+    if (!accessToken) return
+
+    let cancel = false
+    spotifyApi.searchTracks(search).then((res) => {
+      if (cancel) return
+      setSearchResults(
+        res.body.tracks.items.map((track) => {
+          const smallestAlbumImage = track.album.images.reduce(
+            (smallest, image) => {
+              if (image.height < smallest.height) return image
+              return smallest
+            },
+            track.album.images[0]
+          )
+          return {
+            artist: track.artists[0].name,
+            title: track.name,
+            uri: track.uri,
+            albumUrl: smallestAlbumImage.url,
+          }
+        })
+      )
+    })
+    return () => (cancel = true)
+  }, [search, accessToken])
 
   return (
-    <VStack>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          type="search"
-          placeholder="Search Music/Artists"
-          {...register('Search Music/Artists', {})}
-        />
-
-        <input type="submit" />
-      </form>
-    </VStack>
+    <Flex
+      direction="column"
+      justifyContent="center"
+      px={4}
+      style={{ height: '100vh' }}
+    >
+      <Input
+        size="sm"
+        type="search"
+        mt={2}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search Songs/Artists"
+      />
+      <Flex grow={1} justifyContent="center" style={{ overflowY: 'auto' }}>
+        <Flex direction="column" m={2}>
+          {searchResults.map((track) => (
+            <TrackSearchResult
+              track={track}
+              key={track.uri}
+              chooseTrack={chooseTrack}
+            />
+          ))}
+          {searchResults.length === 0 && (
+            <Stack textAlign="center" style={{ whiteSpace: 'pre' }}>
+              <Text>{lyrics}</Text>
+            </Stack>
+          )}
+        </Flex>
+      </Flex>
+      <Stack>
+        <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+      </Stack>
+    </Flex>
   )
 }

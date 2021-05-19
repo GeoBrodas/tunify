@@ -7,7 +7,9 @@ const AUTH_URL =
 export default function Login() {
   return (
     <Stack align="center">
-      <Heading mb={10}>Welcome to Tunify</Heading>
+      <Heading textAlign="center" mb={10}>
+        Welcome to Lyrify
+      </Heading>
       <Link href={AUTH_URL}>
         <Button variant="ghost">Login using Spotify</Button>
       </Link>
