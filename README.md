@@ -1,6 +1,6 @@
 # Lyrify - The Spotify Clone (but better)
 
-Built by [Georgey V B](https://geobrodas.vercel.app)
+Built by [Georgey V B](https://geobrodas.vercel.app) <br />
 Give a ✨ if you have found the repo useful!
 
 ---
@@ -28,4 +28,4 @@ Give a ✨ if you have found the repo useful!
 
 ## Support the Developer 🙌
 
-<a href="https://www.buymeacoffee.com/geobrodas" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/geobrodas" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 207px !important;" ></a>
