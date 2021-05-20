@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
+const API = process.env.REACT_APP_API
+
 export default function useAuth(code) {
   const [accessToken, setAccessToken] = useState()
   const [refreshToken, setRefreshToken] = useState()
@@ -8,7 +10,7 @@ export default function useAuth(code) {
 
   useEffect(() => {
     axios
-      .post('http://localhost:3001/login', { code })
+      .post(API + 'login', { code })
       .then((res) => {
         setAccessToken(res.data.accessToken)
         setRefreshToken(res.data.refreshToken)
@@ -25,7 +27,7 @@ export default function useAuth(code) {
 
     const interval = setInterval(() => {
       axios
-        .post('http://localhost:3001/refresh', { refreshToken })
+        .post(API + 'refresh', { refreshToken })
         .then((res) => {
           setAccessToken(res.data.accessToken)
           setExpiresIn(res.data.expiresIn)

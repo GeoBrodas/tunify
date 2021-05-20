@@ -7,8 +7,10 @@ import Player from './Player'
 import axios from 'axios'
 
 const spotifyApi = new SpotifyWebApi({
-  clientId: '2564aa66546145c1b40d84093a336143',
+  clientId: process.env.REACT_APP_CLIENT_ID,
 })
+
+const API = process.env.REACT_APP_API
 
 export default function Dashboard({ code }) {
   const [search, setSearch] = useState('')
@@ -27,7 +29,7 @@ export default function Dashboard({ code }) {
     if (!playingTrack) return
 
     axios
-      .get('http://localhost:3001/lyrics', {
+      .get(API + 'lyrics', {
         params: {
           track: playingTrack.title,
           artist: playingTrack.artist,
